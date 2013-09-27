@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:MODS="http://www.loc.gov/mods/v3"><dmdSec ID="MODSMD">
+    <mdWrap LABEL="Bibliographic meta-data of the printed version" MDTYPE="MODS" MIMETYPE="text/xml">
+      <xmlData>
+        <MODS:mods version="3.1">
+          <MODS:titleInfo>
+            <MODS:nonSort>The </MODS:nonSort>
+            <MODS:title>Book of Familiar Quotations: being a collection of popular extracts and aphorisms, selected from the works of the best authors. [By L. C. Gent.]</MODS:title>
+          </MODS:titleInfo>
+          <MODS:name type="personal">
+            <MODS:namePart>GENT, L. C.</MODS:namePart>
+          </MODS:name>
+          <MODS:name>
+            <MODS:namePart>BOOK</MODS:namePart>
+          </MODS:name>
+          <MODS:typeOfResource>text</MODS:typeOfResource>
+          <MODS:originInfo>
+            <MODS:place>
+              <MODS:placeTerm type="text">London</MODS:placeTerm>
+            </MODS:place>
+            <MODS:publisher>Whittaker &amp; Co.</MODS:publisher>
+            <MODS:dateIssued>1852</MODS:dateIssued>
+            <MODS:issuance>monographic</MODS:issuance>
+          </MODS:originInfo>
+          <MODS:physicalDescription>
+            <MODS:extent>ix. 109 p. ; 12º.</MODS:extent>
+          </MODS:physicalDescription>
+          <MODS:relatedItem>
+            <MODS:titleInfo>
+              <MODS:title>[The Book of Familiar Quotations: being a collection of popular extracts and aphorisms, selected from the works of the best authors. [By L. C. Gent.]]</MODS:title>
+            </MODS:titleInfo>
+            <MODS:originInfo>
+              <MODS:publisher>London, [1880.] 8º.</MODS:publisher>
+            </MODS:originInfo>
+            <MODS:identifier type="local">(Uk)MP1.0000437166.3</MODS:identifier>
+          </MODS:relatedItem>
+          <MODS:relatedItem type="otherVersion">
+            <MODS:titleInfo>
+              <MODS:title>[The Book of Familiar Quotations: being a collection of popular extracts and aphorisms, selected from the works of the best authors. [By L. C. Gent.]]</MODS:title>
+            </MODS:titleInfo>
+            <MODS:originInfo>
+              <MODS:publisher>pp. viii. 242. Whittaker &amp; Co.: London, 1860. 8º.</MODS:publisher>
+            </MODS:originInfo>
+            <MODS:identifier type="local">(Uk)MP1.0000437166.1</MODS:identifier>
+          </MODS:relatedItem>
+          <MODS:relatedItem type="otherVersion">
+            <MODS:titleInfo>
+              <MODS:title>[The Book of Familiar Quotations: being a collection of popular extracts and aphorisms, selected from the works of the best authors. [By L. C. Gent.]]</MODS:title>
+            </MODS:titleInfo>
+            <MODS:originInfo>
+              <MODS:publisher>pp. xii. 268. xxxiii. G. Routledge &amp; Sons: London, 1866. 8º.</MODS:publisher>
+            </MODS:originInfo>
+            <MODS:identifier type="local">(Uk)MP1.0000437166.2</MODS:identifier>
+          </MODS:relatedItem>
+          <MODS:location>
+            <MODS:physicalLocation>British Library HMNTS 11602.d.2.</MODS:physicalLocation>
+          </MODS:location>
+          <MODS:recordInfo>
+            <MODS:recordContentSource authority="marcorg">Uk</MODS:recordContentSource>
+            <MODS:recordCreationDate encoding="w3cdtf">1988-07-26</MODS:recordCreationDate>
+            <MODS:recordChangeDate encoding="w3cdtf">1988-07-26</MODS:recordChangeDate>
+            <MODS:recordIdentifier>000411385</MODS:recordIdentifier>
+          </MODS:recordInfo>
+          <MODS:accessCondition type="Copyright Status">Out of Copyright</MODS:accessCondition>
+        </MODS:mods>
+      </xmlData>
+    </mdWrap>
+  </dmdSec>
+  </mets>
