@@ -13,5 +13,5 @@ Based on a set of digitised works (50,000 CC0 Works from 1523-1922: 65,000 zippe
 300k+ small (<8in² at 300dpi) illustrations in the collection.
 
 4) 'load_embellishments.py' pulls in all the collected images so far into a single, large redis set.
-5) SRANDMEMBER is responsible for pulling out a random image, 'parse_xml' tries to gather up some metadata from the less-than-spectacular metadata and some copy&pasted gist code is used to post to Tumblr.
+5) SRANDMEMBER is responsible for pulling out a random image, 'parse_xml' tries to gather up some metadata from the less-than-spectacular metadata and some copy&pasted gist code is used to post to Tumblr. (https://gist.github.com/velocityzen/1242662)
 
