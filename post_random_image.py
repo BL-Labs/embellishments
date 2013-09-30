@@ -1,5 +1,5 @@
 from redis import Redis
-import os
+import os, sys
 import cv2
 from cv2_detect import detect
 
@@ -14,6 +14,13 @@ from parse_xml import parse_xml
 # /static/e/1870/000471167_01_000249_1_Robert Lynne  A novel_1870.jpg
 random_image = r.srandmember("images")
 filename = random_image.split("/")[-1]
+
+if len(sys.argv) == 2:
+  suggested_img = sys.argv[1]
+  if r.sismember("images", "/static/e/"+suggested_img):
+    print("Using '{0}'".format(suggested_img))
+    filename = suggested_img.split("/")[1]
+
 id, vol, page, imgno, _ = filename.split("_",4)
 
 identifier, title, author, pubplace, publisher, guesseddate = parse_xml(id)
@@ -66,10 +73,10 @@ print(caption)
 
 print("\n Tags: " + ",".join(map(lambda x: "#"+x, tags)))
 
-CONSUMER_KEY = ''
-CONSUMER_SECRET = ''
-OAUTH_TOKEN = ''
-OAUTH_TOKEN_SECRET = ''
+CONSUMER_KEY = 'mqZixgrsXwBqdF64mZRACdNGnUW5QXXeuxfokxph3yu4oqzOi7'
+CONSUMER_SECRET = '6OUfRjmhO1PNAgmT6W3vRoWYUocdpJKu0wlxzKcUPNjDoRoJqP'
+OAUTH_TOKEN = '6DVy1sy1LrqWKovXxnFOTZYbqgwbIZeEhcTeyyblmqejMW0cDk'
+OAUTH_TOKEN_SECRET = 'lJc0faAJ582LeTCLAn3tzwzrFIai60YhYOyi7ugXpnEyOk9ynQ'
  
 BLOG = 'mechanicalcurator.tumblr.com'
  
@@ -88,6 +95,13 @@ try:
     response = api.createPhotoPost(BLOG,post)
     if 'id' in response:
         print response['id']
+        post = {'caption': caption,
+            'tags':tags,
+            'response': response,
+            'id': identifier,
+            'year': guesseddate,
+            'filename': filename}
+        r.lpush("posted", json.dumps(post))
     else:
         print response
             
@@ -95,6 +109,7 @@ except APIError:
     print "Error"
  
 print "Done!"
+
 
 try:
   os.system('gsettings set org.gnome.desktop.background picture-uri "file://{0}"'.format(os.path.join(root, guesseddate, filename)))
