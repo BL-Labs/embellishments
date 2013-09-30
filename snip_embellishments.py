@@ -82,9 +82,11 @@ def snip_illustrations(zp, filename, altoxmloldpath, scale = 1.1, threshold = 12
           try:
             cv2.imwrite(os.path.join(embellish_path, guesseddate, "{0}_{1}_{2}_{3}_{4}_{5}.jpg".format(id, vol, page, counter, make_safe(title), guesseddate)), 
                         img_color[boundary[0][1]:boundary[1][1], boundary[0][0]:boundary[1][0]])
+            print("{0}_{1}_{2}_{3}_{4}_{5}.jpg".format(id, vol, page, counter, make_safe(title), guesseddate))
           except:
-            cv2.imwrite(os.path.join(embellish_path, guesseddate, "{0}_{1}_{2}_{3}.jpg".format(id, vol, page, counter)),
+            cv2.imwrite(os.path.join(embellish_path, guesseddate, "{0}_{1}_{2}_{3}_{4}.jpg".format(id, vol, page, counter, guesseddate)),
                         img_color[boundary[0][1]:boundary[1][1], boundary[0][0]:boundary[1][0]])
+            print("{0}_{1}_{2}_{3}_{4}.jpg".format(id, vol, page, counter, guesseddate))
     else:
       print("All illustration areas in {1}(vol:{2}, pg: {3} are above threshold area size (currently: {0})".format(threshold, id, vol, page))
 
