@@ -41,3 +41,34 @@ def increase_size(shape, factor, mapping, page):
   if r[3] > page[1]:
     r[3] = page[1]
   return r
+
+def get_attrib_rect(enode):
+  x,y = map(int, [enode.attrib['HPOS'], enode.attrib['VPOS']])
+  h,w = map(int, [enode.attrib['HEIGHT'], enode.attrib['WIDTH']])
+  return (x,y,w,h)
+
+def characterise(doc):
+  page = doc.find("Layout/Page")
+  
+  # <Page ID="P27" PHYSICAL_IMG_NR="27" HEIGHT="2579" WIDTH="1569" POSITION="Right" ACCURACY="53.41">
+  #			<TopMargin ID="P27_TM00001" HPOS="0" VPOS="0" WIDTH="1568" HEIGHT="320"/>
+  #			<LeftMargin ID="P27_LM00001" HPOS="0" VPOS="320" WIDTH="38" HEIGHT="2009"/>
+
+  page_position = page.attrib['POSITION']
+  page_shape, images = get_illustration_coords(doc)
+
+  leftmargin = page.find("LeftMargin")
+  rightmargin = page.find("RightMargin")
+  page_left_margin = get_attrib_rect(leftmargin)
+  page_right_margin = get_attrib_rect(rightmargin)
+  
+  printblock = page.find("PrintSpace")
+  printblock_shape = get_attrib_rect(printblock)
+
+  return {'page': page_shape,
+          'orientation': page_position,
+          'leftmargin': page_left_margin,
+          'rightmargin': page_right_margin,
+          'printspace': printblock_space,
+          'images':images}
+  

@@ -65,6 +65,7 @@ def snip_illustrations(zp, filename, altoxmloldpath, scale = 1.1, threshold = 12
       img_color = cv2.imread(extract_jp2(zp, filename))
       delete_jp2(filename)
       h,w,_ = img_color.shape
+      current_page_shape = (w,h)
       dh = float(h)/float(page_shape[1])
       dw = float(w)/float(page_shape[0])
       identifier, title, author, pubplace, publisher, guesseddate = parse_xml(id)
@@ -72,7 +73,7 @@ def snip_illustrations(zp, filename, altoxmloldpath, scale = 1.1, threshold = 12
         counter += 1
         if rect[2]*rect[3] < threshold:
           print("Attempting to slice '{3}' from {0}_{1}_{2}".format(id, vol, page, rect))
-          scaled = increase_size(rect, scale, (dw,dh), page_shape)
+          scaled = increase_size(rect, scale, (dw,dh), current_page_shape)
           boundary = get_rect(scaled)
           if len(guesseddate) != 4:
             guesseddate = "Unknown"
