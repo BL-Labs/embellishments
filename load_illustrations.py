@@ -1,10 +1,13 @@
 from c19_paths import altopath_to_idvol
 from redis import Redis
-import time
+import time, sys
 
 r = Redis()
 
-q = "total"
+q = "q"
+if len(sys.argv) == 2:
+  q = sys.argv[1]
+
 LIMIT = 10000
 PAUSE = 1
 
@@ -15,6 +18,8 @@ from collections import defaultdict
 jobtally = defaultdict(lambda:0)
 cur = 0.0
 st = time.time()
+
+print("Adding illustration check list to '{0}'".format(q))
 
 with open(illustrations, "r") as ill_list:
   curid = ""
@@ -27,7 +32,7 @@ with open(illustrations, "r") as ill_list:
     jobtally[id[:4]] += 1
     if curid != ""  and (id != curid or vol != curvol):
       jobs += 1
-      # r.lpush(q, "\t".join(pagelist))
+      r.lpush(q, "\t".join(pagelist))
       pagelist = []
       curid = id
       curvol = vol

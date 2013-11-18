@@ -2,9 +2,9 @@ from xml.etree import ElementTree as ET
 
 from c19_paths import *
 
-def get_illustration_coords(doc):
+def get_illustration_coords(doc, component="PrintSpace"):
   page = doc.find("Layout/Page")
-  illustrations = doc.findall('Layout/Page/PrintSpace/ComposedBlock[@TYPE="Illustration"]/GraphicalElement')
+  illustrations = doc.findall('Layout/Page/{0}/ComposedBlock[@TYPE="Illustration"]/GraphicalElement'.format(component))
   pageh, pagew = int(page.attrib['HEIGHT']), int(page.attrib['WIDTH'])
   images = []
   for img in illustrations:

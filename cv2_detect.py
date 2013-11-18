@@ -46,7 +46,7 @@ def detect(inputimg, scaleFactor=1.2, minNeighbors=4, minSize=(20, 20),
         rectlist[t+cascade_type] = rects
   return rectlist, hit
 
-def explain_houghp_lines(filename, a=150, b=200, c=60, d=20, e=10):
+def explain_houghp_lines(filename, a=150, b=200, c=60, d=20, e=4):
   img = cv2.imread(filename)
   grey = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
   cv2.imwrite(filename+"grey.jpg", grey)
@@ -58,24 +58,30 @@ def explain_houghp_lines(filename, a=150, b=200, c=60, d=20, e=10):
       cv2.line(img,(x1,y1),(x2,y2),(0,255,0),2)
     cv2.imwrite(filename+'houghlines.jpg',img)
 
-def houghp_lines(filename, a=150, b=200, c=60, d=20, e=20):
-  img = cv2.imread(filename)
-  grey = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-  edges = cv2.Canny(grey,a,b,apertureSize = 3)
-  lines = cv2.HoughLinesP(edges,e,np.pi/180, 300, minLineLength = c, maxLineGap = d)
-  if lines != None:
-    return lines
-  else:
+def houghp_lines(filename, a=150, b=200, c=60, d=20, e=4):
+  try:
+    img = cv2.imread(filename)
+    grey = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(grey,a,b,apertureSize = 3)
+    lines = cv2.HoughLinesP(edges,e,np.pi/180, 300, minLineLength = c, maxLineGap = d)
+    if lines != None:
+      return lines
+    else:
+      return [[]]
+  except cv2.error:
     return [[]]
 
 def houghp_circles(filename, a=2, b=80, c=100, d=100, e=50, f=150):
-  img = cv2.imread(filename)
-  grey = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-  circles = cv2.HoughCircles(grey, cv2.cv.CV_HOUGH_GRADIENT, a, b, None, c, d, e, f)
-  if circles != None:
-    return circles, img.shape
-  else:
-    return [], img.shape
+  try:
+    img = cv2.imread(filename)
+    grey = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    circles = cv2.HoughCircles(grey, cv2.cv.CV_HOUGH_GRADIENT, a, b, None, c, d, e, f)
+    if circles != None:
+      return circles, img.shape
+    else:
+      return [], img.shape
+  except cv2.error:
+    return [], (1,1,1)
 
 def polar_lines(lines):
   polar = []
@@ -88,29 +94,44 @@ def polar_lines(lines):
     polar.append((r,theta))
   return polar
 
-def slantyness(filename, a=150, b=200, c=60, d=20, e=20):
-  # faking a subjective measure
-  # takes the probabalistic hough lines, and combines them (intentionally without mathematical rigour!)
-  # to form an average 'gradient' for the image
-  lines = houghp_lines(filename, a=a, b=b, c=c, d=d, e=20)
-  polarlines = polar_lines(lines)
-  slants = [(1 - m.cos(4*line[1])) for line in polarlines]
+def slantyness(filename, a=150, b=200, c=60, d=20, e=5):
+  try:
+    # faking a subjective measure
+    # takes the probabalistic hough lines, and combines them (intentionally without mathematical rigour!)
+    # to form an average 'gradient' for the image
+    lines = houghp_lines(filename, a=a, b=b, c=c, d=d, e=e)
+    polarlines = polar_lines(lines)
+    slants = [(1 - m.cos(4*line[1])) for line in polarlines]
   
-  # ave. closer to 0, predominately horiz+vert lines
-  # closer to 1,      "        slanted lines
-  if slants:
-    return sum(slants)/ float(len(slants))
-  else:
-    return
+    # ave. closer to 0, predominately horiz+vert lines
+    # closer to 1,      "        slanted lines
+    if slants:
+      return sum(slants)/ float(len(slants))
+    else:
+      return 0.0
+  except cv2.error:
+    return 0.0
 
 def aspectratio(filename, a=150, b=200, c=60, d=20, e=20):
-  lines = houghp_lines(filename, a=a, b=b, c=c, d=d, e=20)
-  polarlines = polar_lines(lines)
-  horiz = [(r,th) for r, th in polarlines if np.abs(th) < np.pi/8]
-  verts = [(r,th) for r, th in polarlines if np.abs(th) > 3*np.pi/8]
-  hbias = sum(map(lambda x: x[0], horiz))
-  vbias = sum(map(lambda x: x[0], verts))
-  return hbias, vbias
+  try:
+    lines = houghp_lines(filename, a=a, b=b, c=c, d=d, e=20)
+    polarlines = polar_lines(lines)
+    horiz = [(r,th) for r, th in polarlines if np.abs(th) < 2*np.pi/8]
+    verts = [(r,th) for r, th in polarlines if np.abs(th) > 2*np.pi/8]
+    hbias = sum(map(lambda x: x[0], horiz))
+    vbias = sum(map(lambda x: x[0], verts))
+    if horiz:
+      hbias = hbias / len(horiz)
+    if verts:
+      vbias = vbias / len(verts)
+    return hbias, vbias
+  except cv2.error:
+    return 1.0, 1.0
+
+def area(filename, dpi=1.0):
+  img = cv2.imread(filename)
+  h,w,depth = img.shape
+  return float(h*w)/(dpi**2.0)
 
 def bubblyness(filename, a=2, b=80, c=100, d=100, e=20, f=150):
   circles, shape = houghp_circles(filename, a,b,c,d,e,f)
@@ -121,6 +142,6 @@ def bubblyness(filename, a=2, b=80, c=100, d=100, e=20, f=150):
     sizes = [x[2] for x in circles[0]]
     xs = [midx - x[0] for x in circles[0]]
     ys = [midy - x[1] for x in circles[0]]
-    return sum(sizes), sum(sizes)/float(len(sizes)), sum(xs)/float(len(xs)), sum(ys)/float(len(ys)) 
+    return sum(sizes)/float(len(sizes)), sum(xs)/float(len(xs)), sum(ys)/float(len(ys)) 
   else:
-    return 0,0,0,0
+    return 0,0,0
