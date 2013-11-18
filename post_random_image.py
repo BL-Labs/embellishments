@@ -155,10 +155,10 @@ print(caption)
 
 print("\n Tags: " + ",".join(map(lambda x: "#"+x, tags)))
 
-CONSUMER_KEY = 'mqZixgrsXwBqdF64mZRACdNGnUW5QXXeuxfokxph3yu4oqzOi7'
-CONSUMER_SECRET = '6OUfRjmhO1PNAgmT6W3vRoWYUocdpJKu0wlxzKcUPNjDoRoJqP'
-OAUTH_TOKEN = '6DVy1sy1LrqWKovXxnFOTZYbqgwbIZeEhcTeyyblmqejMW0cDk'
-OAUTH_TOKEN_SECRET = 'lJc0faAJ582LeTCLAn3tzwzrFIai60YhYOyi7ugXpnEyOk9ynQ'
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
+OAUTH_TOKEN = ''
+OAUTH_TOKEN_SECRET = ''
  
 BLOG = 'mechanicalcurator.tumblr.com'
  
