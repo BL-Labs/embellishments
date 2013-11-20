@@ -2,11 +2,17 @@ from xml.etree import ElementTree as ET
 import re
 import os
 
+from redis import Redis
+
+r = Redis()
+
 YEAR_P = re.compile(r"(1[0-9]{3})")
 
 METADATA_ROOT_DIRECTORY = "/mnt/Downloads/md"
 
 MODSXMLNS = "{http://www.loc.gov/mods/v3}"
+
+nasmount = "/mnt/nas"
 
 def get_filepath(identifier):
   return os.path.join(METADATA_ROOT_DIRECTORY, identifier[:4], identifier, "{0}.xml".format(identifier))
@@ -51,3 +57,32 @@ def parse_xml(identifier):
     pubdate = pubdaten.text.strip()
   guesseddate = divination_for_year(pubdate, pubplace, publisher)
   return identifier, title, author, pubplace, publisher, guesseddate
+
+def generate_metadata(filename):
+  id, vol, page, imgno, _ = filename.split("_",4)
+  identifier, title, author, pubplace, publisher, guesseddate = parse_xml(id)
+  decoded = map(lambda x: x.encode("utf-8"), [title, author, guesseddate, pubplace, publisher, vol, str(int(page)), identifier])
+
+  # lookup direct links, if any
+  # eg to create http://itemviewer.bl.uk/?itemid=lsidyv3bd2589c#ark:/81055/vdc_000000054755.0x000020
+
+  rosetta = r.get("s:"+id)
+  if rosetta:
+    d, a, u = rosetta.strip().split("\t")
+    adjusted_ark_number = "{0:012x}".format(int(a.split("_")[1], 16) - 1)
+    adj_ark = "{0}_{1}".format(a.split("_")[0], adjusted_ark_number.upper())
+    hexpage = "0x000001"
+    try:
+      hexpage = "{0:06x}".format(int(page)).upper()
+      print hexpage
+    except:
+      pass
+    additional = """
+<ul><li>Open the page in the <a href="http://itemviewer.bl.uk/?itemid={2}#{1}.0x{0}">British Library's itemViewer (page: {3})</a></li>
+<li><a href="http://access.dl.bl.uk/{2}">Download the PDF for this book</a>
+""".format(hexpage, adj_ark, u, page)
+    decoded += [additional]
+  else:
+    decoded += [u""]
+
+  return id, vol, page, imgno, identifier, title, author, pubplace, publisher, guesseddate, decoded
