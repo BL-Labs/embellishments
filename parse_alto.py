@@ -2,6 +2,7 @@ from xml.etree import ElementTree as ET
 
 from c19_paths import *
 
+<<<<<<< HEAD
 def splitjp2zip(fn):
   id,vol,extent = fn.split("_",3)[:2]
   return (id, vol, extent[:-3].split("-"))
@@ -14,6 +15,8 @@ def extent(id, vol = "0"):
     if fnvol == vol:
       return extent 
 
+=======
+>>>>>>> d03dcbc9cd6b051a2d3d79a5317c7aaaed83ddde
 def get_illustration_coords(doc, component="PrintSpace"):
   page = doc.find("Layout/Page")
   illustrations = doc.findall('Layout/Page/{0}/ComposedBlock[@TYPE="Illustration"]/GraphicalElement'.format(component))
