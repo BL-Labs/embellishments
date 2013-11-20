@@ -2,9 +2,21 @@ from xml.etree import ElementTree as ET
 
 from c19_paths import *
 
-def get_illustration_coords(doc):
+def splitjp2zip(fn):
+  id,vol,extent = fn.split("_",3)[:2]
+  return (id, vol, extent[:-3].split("-"))
+
+def extent(id, vol = "0"):
+  a = filter(lambda x: x.startswith(id), JP2ZIPS)
+  if len(a) == 1:
+    return a[0].split("_",3)[2][:-3].split("-")
+  for _, fnvol, extent in map(splitjp2zip, a):
+    if fnvol == vol:
+      return extent 
+
+def get_illustration_coords(doc, component="PrintSpace"):
   page = doc.find("Layout/Page")
-  illustrations = doc.findall('Layout/Page/PrintSpace/ComposedBlock[@TYPE="Illustration"]/GraphicalElement')
+  illustrations = doc.findall('Layout/Page/{0}/ComposedBlock[@TYPE="Illustration"]/GraphicalElement'.format(component))
   pageh, pagew = int(page.attrib['HEIGHT']), int(page.attrib['WIDTH'])
   images = []
   for img in illustrations:

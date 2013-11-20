@@ -6,6 +6,24 @@ nasmount = "/mnt/nas/"
 
 JP2ZIPS = os.listdir(os.path.join(nasmount, "JP2"))
 
+def splitjp2zip(fn):
+  id,vol,extent = fn.split("_",3)[:3]
+  return (id, vol, extent[:-3].split("-"))
+
+def extent(id, vol = "0"):
+  a = filter(lambda x: x.startswith(id), JP2ZIPS)
+  if len(a) == 1:
+    return a[0].split("_",3)[2][:-3].split("-")
+  for _, fnvol, extent in map(splitjp2zip, a):
+    if fnvol == vol:
+      return extent 
+
+def photofn(fn):
+  fn_name = fn.strip().split("/")[-1]
+  print(fn_name)
+  id, vol, page, item, tail = fn.strip().split("/")[-1].split("_",4)
+  return (id, vol, page, item, tail)
+
 def id_to_path(id):
   return os.path.join(nasmount, "by_id", id[:4], id)
 
